@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build
-GH_PAGES_SOURCES = docs/source docs/Makefile
+
 
 
 # Internal variables.
@@ -155,13 +155,16 @@ doctest:
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
 
+GH_PAGES_SOURCES = docs/source docs/Makefile
 gh-pages:
 	git checkout gh-pages
 	rm -rf build _sources _static _modules
 	git checkout master $(GH_PAGES_SOURCES)
 	git reset HEAD
-	make -f docs/Makefile html
-	mv -fv build/html/* ./
+	cd docs
+	make -f Makefile html
+	mv -fv build/html/* ./..
+	cd ..
 	rm -rf $(GH_PAGES_SOURCES) build
 	git add -A
 	git commit -m "Generated gh-pages for `git log master -1 --pretty=short \
