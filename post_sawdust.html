@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>post_sawdust &mdash; misc-bio-stuff 0.001 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.001',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="misc-bio-stuff 0.001 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to misc-bio-stuff’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to misc-bio-stuff’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">misc-bio-stuff 0.001 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="post-sawdust">
+<h1>post_sawdust<a class="headerlink" href="#post-sawdust" title="Permalink to this headline">¶</a></h1>
+<p>docstring</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<span class="target" id="module-post_sawdust"></span><dl class="function">
+<dt id="post_sawdust.all_same">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">all_same</tt><big>(</big><em>items</em><big>)</big><a class="headerlink" href="#post_sawdust.all_same" title="Permalink to this definition">¶</a></dt>
+<dd><p>tests if all items in alist are the same
+<a class="reference external" href="http://stackoverflow.com/a/3787983">http://stackoverflow.com/a/3787983</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.check_sort_order_sam_file">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">check_sort_order_sam_file</tt><big>(</big><em>lst</em><big>)</big><a class="headerlink" href="#post_sawdust.check_sort_order_sam_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>NOT IMPLEMENTED samtools sort and pyhton sort do not get along at the moment</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.check_split_read">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">check_split_read</tt><big>(</big><em>list_of_fragments</em><big>)</big><a class="headerlink" href="#post_sawdust.check_split_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of samdicts returns info dict with combinatorial status  
+Insures that the fragment of split reads can be combined into one SAM line.
+The following checks are carried out:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Same chromosome</li>
+<li>Same strand orientatien +/-</li>
+<li>userdefined maximum distance allowed between fragments</li>
+<li>No overlap between fragments</li>
+<li>No switchorder within fragments</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.clean_dict">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">clean_dict</tt><big>(</big><em>samdict</em><big>)</big><a class="headerlink" href="#post_sawdust.clean_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes unecessary private TAGS mostly split read specific.
+Oh TAG XA not found in manual where do you come from what do you mean
+for now I will swipe you clean</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.clearBit">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">clearBit</tt><big>(</big><em>int_type</em>, <em>offset</em><big>)</big><a class="headerlink" href="#post_sawdust.clearBit" title="Permalink to this definition">¶</a></dt>
+<dd><p>clearBit() returns an integer with the bit at &#8216;offset&#8217; cleared.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.collect_metrics">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">collect_metrics</tt><big>(</big><em>aln_dict</em>, <em>metrics</em><big>)</big><a class="headerlink" href="#post_sawdust.collect_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts number of templates: example:
+This section needs a major overhaul, to many if and elses</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.combinde_md_field">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">combinde_md_field</tt><big>(</big><em>new_samdict</em>, <em>samdict</em><big>)</big><a class="headerlink" href="#post_sawdust.combinde_md_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines the MD field of two adjacent fragemnts.
+Segemehl seems to set always an integer at the start and end of the field.
+If no match is given 0 is expected.
+The fields are combined in partioning the first/previous  fragment (pf)
+into a  remainder  and the integer at the end of read for the next framgment (nf)
+the first intger is matched and the remainder of kept.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.combine_split_reads">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">combine_split_reads</tt><big>(</big><em>list_of_fragments</em>, <em>info</em><big>)</big><a class="headerlink" href="#post_sawdust.combine_split_reads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines the split read if possible in any case my YS: flag is appended with the state of the read
+The first fragment serves as template for the combined read in which</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.correct_flags_and_mate_information">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">correct_flags_and_mate_information</tt><big>(</big><em>aln_dict</em><big>)</big><a class="headerlink" href="#post_sawdust.correct_flags_and_mate_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>horrible section needs to be cleaned up</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.first_or_second_read">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">first_or_second_read</tt><big>(</big><em>flag</em><big>)</big><a class="headerlink" href="#post_sawdust.first_or_second_read" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns 0 if its first sequenced read and 1 for the second sequenced read</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.get_genomic_sequence_length">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">get_genomic_sequence_length</tt><big>(</big><em>cigar</em><big>)</big><a class="headerlink" href="#post_sawdust.get_genomic_sequence_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sequence length in genomic space by 
+doing the cigar opeartions.
+Does not catch malformed cigarlines</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.group_sam_hits_by_mappings">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">group_sam_hits_by_mappings</tt><big>(</big><em>sam_hits</em><big>)</big><a class="headerlink" href="#post_sawdust.group_sam_hits_by_mappings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns  a dictionary with:</p>
+<p>dict-&gt;mappingnumber-&gt;[0] = list
+dict-&gt;mappingnumber-&gt;[1] = list</p>
+<p>0 = first read, 1 = second read</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.init_metrics">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">init_metrics</tt><big>(</big><big>)</big><a class="headerlink" href="#post_sawdust.init_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict like thingy for counting</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.make_sam_line">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">make_sam_line</tt><big>(</big><em>samdict</em><big>)</big><a class="headerlink" href="#post_sawdust.make_sam_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a samdict and glues all the variables together to produce a SAM line</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.process_split_reads">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">process_split_reads</tt><big>(</big><em>aln_dict</em><big>)</big><a class="headerlink" href="#post_sawdust.process_split_reads" title="Permalink to this definition">¶</a></dt>
+<dd><p>wrapper function for check_split_read and combine_split_read</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.read_orientation">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">read_orientation</tt><big>(</big><em>flag</em><big>)</big><a class="headerlink" href="#post_sawdust.read_orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns 0 if sense/+ and 1 for reversed</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.read_sam_line">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">read_sam_line</tt><big>(</big><em>line</em><big>)</big><a class="headerlink" href="#post_sawdust.read_sam_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the SAM line in a dictionary with optional fields
+stored in a seprate dictionary under samdict[&#8216;opt&#8217;]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.samdict_set_pe_mate">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">samdict_set_pe_mate</tt><big>(</big><em>samdict_A</em>, <em>samdict_B</em><big>)</big><a class="headerlink" href="#post_sawdust.samdict_set_pe_mate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets:</p>
+<ul class="simple">
+<li>mate reference name</li>
+<li>mate pos</li>
+<li>insertion size</li>
+<li>proper pair (same chr &amp;&amp; reverse read behind not reverse read)</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.setBit">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">setBit</tt><big>(</big><em>int_type</em>, <em>offset</em><big>)</big><a class="headerlink" href="#post_sawdust.setBit" title="Permalink to this definition">¶</a></dt>
+<dd><p>setBit() returns an integer with the bit at &#8216;offset&#8217; set to 1.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.testBit">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">testBit</tt><big>(</big><em>int_type</em>, <em>offset</em><big>)</big><a class="headerlink" href="#post_sawdust.testBit" title="Permalink to this definition">¶</a></dt>
+<dd><p>testBit() returns a nonzero result, 2**offset, if the bit at &#8216;offset&#8217; is one.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="post_sawdust.toggleBit">
+<tt class="descclassname">post_sawdust.</tt><tt class="descname">toggleBit</tt><big>(</big><em>int_type</em>, <em>offset</em><big>)</big><a class="headerlink" href="#post_sawdust.toggleBit" title="Permalink to this definition">¶</a></dt>
+<dd><p>toggleBit() returns an integer with the bit at &#8216;offset&#8217; inverted, 0 -&gt; 1 and 1 -&gt; 0</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to misc-bio-stuff&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/post_sawdust.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to misc-bio-stuff’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">misc-bio-stuff 0.001 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Sven-Holger Puppel.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
