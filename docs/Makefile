@@ -154,16 +154,16 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-
-GH_PAGES_SOURCES = source Makefile
+ 
+GH_PAGES_SOURCES = docs/source docs/Makefile
 gh-pages:
 	git checkout gh-pages
 	rm -rf build _sources _static _modules *.html
 	git checkout master $(GH_PAGES_SOURCES)
 	git reset HEAD
-	make html
-	mv -fv build/html/* ../.
-	rm -rf $(GH_PAGES_SOURCES) build
+	cd docs; make html
+	mv -fv docs/build/html/* .
+	rm -rf $(GH_PAGES_SOURCES) docs/build
 	git add -A
 	git commit -m "Generated gh-pages for `git log master -1 --pretty=short \
 	--abbrev-commit`" && git push origin gh-pages ; git checkout master
