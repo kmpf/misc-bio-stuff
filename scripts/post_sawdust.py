@@ -52,13 +52,13 @@ def eval_arguments(args):
     
     if args.seq_type is None:
         pass
-        #raise StandardError( 'Argument --seq-type is {0}; argument is required; choices: DNA, RNA'.format(args.seq_type))
+        raise StandardError( 'Argument --seq-type is {0}; argument is required; choices: DNA, RNA'.format(args.seq_type))
 
     if args.seq_type == 'RNA':
         pass
         if args.library_type is None:
             my_choices = 'fr-unstranded', 'fr-firststrand', 'fr-secondstrand'
-            #raise StandardError( 'Argument --library-type is {0}; argument is required; choices: {1}'.format(args.seq_type, my_choices))
+            raise StandardError( 'Argument --library-type is {0}; argument is required; choices: {1}'.format(args.library_type, my_choices))
   
       
     if (args.library_type == 'fr-unstranded' and args.seq_type == 'RNA'):
@@ -1011,3 +1011,5 @@ if __name__ == '__main__':
     args = read_arguments()
     eval_arguments(args)
     main(args)
+
+__version__ = '0.001'
