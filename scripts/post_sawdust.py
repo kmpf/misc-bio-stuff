@@ -72,7 +72,7 @@ def eval_arguments(args):
 ## called from main                     
 def init_metrics():
     """Returns a dict like thingy for counting"""
-
+    #new test add 
     metrics = []
 
     indict =     OrderedDict()
