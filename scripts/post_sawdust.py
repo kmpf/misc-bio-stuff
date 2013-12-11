@@ -160,6 +160,12 @@ def group_sam_hits_by_mappings(sam_hits):
             for i in [0,1]:
                 aln_dict.setdefault(XI_val, {})[i]= []
 
+        
+
+        if args.read_type == 'single':
+            samdict['flag'] = setBit(samdict['flag'],6)
+            samdict['flag'] = clearBit(samdict['flag'],7)
+
         fstsnd = first_or_second_read(samdict['flag'])
         aln_dict[XI_val][fstsnd].append(samdict)
 
@@ -404,6 +410,11 @@ def make_sam_line(samdict):
     
     keylist = 'qname, flag, rname, pos, mapq, cigar, mrnm, mpos, isize, seq, qual'.split(', ')
     pre_line =[]
+
+    #quick fix for single 
+    if args.read_type == 'single':
+        samdict['flag'] = clearBit(samdict['flag'],6)
+
     for key in keylist:
         pre_line.append(samdict[key])
         
@@ -842,6 +853,9 @@ def get_genomic_sequence_length(cigar):
 def first_or_second_read(flag):
     """returns 0 if its first sequenced read and 1 for the second sequenced read """
 
+
+
+    
     fst = testBit(flag,6) 
     snd = testBit(flag,7)
 
