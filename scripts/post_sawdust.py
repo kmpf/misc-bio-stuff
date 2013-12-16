@@ -565,10 +565,10 @@ def combinde_md_field(new_samdict, samdict):
         tmatch = str(pf + nf)
         md_new =   ''.join([remainder_pf, tmatch, remainder_nf])
     #pf has matches nf something else , discard 0 of nf
-    elif( pf > 1 and nf == 0):
+    elif( pf >= 1 and nf == 0):
         md_new =   ''.join([remainder_pf, str(pf),  remainder_nf])
     #pf has matches nf something else , discard 0 of nf
-    elif( pf == 0  and nf > 1):
+    elif( pf == 0  and nf >= 1):
         md_new =   ''.join([remainder_pf, str(nf),  remainder_nf])
     #both have no matches so just discarding 0 of pf should be enough
     elif( pf == 0 and  nf == 0):
