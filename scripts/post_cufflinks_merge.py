@@ -11,8 +11,8 @@ from collections import defaultdict
 import numpy
 from Bio import SeqIO
 
-
-
+pp = pprint.PrettyPrinter(indent=4)
+  
 
 
 def read_arguments():
@@ -31,15 +31,36 @@ def read_arguments():
                     default=False, help ="Removes transcripts without strand specifity")
 
     parser.add_argument('--remove-gencode',  action='store_true',
-                    default=False, help ="In order to keep only 'novel' transcripts everyhting with with an ensembl id will be removed")
+                    default=False, help ="hard removal of gtf line which match 'ENS' in gene_name field")
 
+    parser.add_argument('--string',  
+                        default='ENS', help ="string to match in gtf field gene_name for discarding")
+
+
+    parser.add_argument('--remove-by-gene-name',  action='store_true',
+                        default=False, help ="remove gtf if matches string in gene_name field")
+
+    parser.add_argument('--filter-by-class',  action='store_true',
+                        default=False, help ="remove gtf if any class is found in class_code field, requieres class_list")
  
+    parser.add_argument('--class-list',  
+                        default=None, help ="class codes to be removed possible '=,c,j,e,i,o,p,r,u,x,s,.'")
+
+    parser.add_argument('--filter-by-class-and-gene-name',  action='store_true',
+                        default=False, help ="combines remove-by-class and remove-by-gene-name")
+    
+
     return parser.parse_args()
 
 
 
 def eval_arguments(args):
-    pass
+    if args.class_list:
+        t = args.class_list
+        t = t.replace("'",'')
+        args.class_list = t.split(',')
+    return(args)
+
 
 
 
@@ -132,7 +153,7 @@ def read_gtf_line(line):
     
 
 def make_transcript_object(gtf_dicts):
- 
+
     t_obj =  defaultdict(lambda: defaultdict(dict))
     t_obj['info']['n_exon'] = 0
     t_obj['info']['class_code'] = ()
@@ -295,7 +316,55 @@ def remove_gencode(gtf_dict):
             discard = True
 
     return discard 
+
+
+
+
+def remove_by_gene_name(gtf_dict, string):
+    pattern = re.compile(string)
+    discard = False
+
+    if 'gene_name' in gtf_dict:
+        result = pattern.search(gtf_dict['gene_name'])
+        if result:
+            discard = True
+
+    return discard 
+
+
+
+def filter_by_class(gtf_dict, remove_class_list):
+    """ from tophat
+    Priority Code Description
+    1 = Complete match of intron chain
+    2 c Contained
+    3 j Potentially novel isoform (fragment): at least one splice junction is shared with a reference transcript
+    4 e Single exon transfrag overlapping a reference exon and at least 10 bp of a reference intron, indicating a possible pre-mRNA fragment.
+    5 i A transfrag falling entirely within a reference intron
+    6 o Generic exonic overlap with a reference transcript
+    7 p Possible polymerase run-on fragment (within 2Kbases of a reference transcript)
+    8 r Repeat. Currently determined by looking at the soft-masked reference sequence and applied to transcripts where at least 50% of the bases are lower case
+    9 u Unknown, intergenic transcript
+    10 x Exonic overlap with reference on the opposite strand
+    11 s An intron of the transfrag overlaps a reference intron on the opposite strand (likely due to read mapping errors)
+    12 . (.tracking file only, indicates multiple classifications)"""
+
+    discard = False
+    if 'class_code' in gtf_dict:
+        if gtf_dict['class_code'] in remove_class_list:
+            discard = True
+            return discard 
     
+def filter_by_class_and_gene_name(gtf_dict, string=None, class_list=None):
+    discard = False
+    gene_res  = remove_by_gene_name(gtf_dict, string)
+    class_res = filter_by_class(gtf_dict, class_list)
+
+    if (gene_res == True and class_res == True):
+        discard = True
+        return discard 
+    
+
 def main(args):
     ID = None
     # print(args)
@@ -313,13 +382,25 @@ def main(args):
 
         if args.remove_gencode:
             if remove_gencode(gtf_dict):
+                continue
+
+        if args.remove_by_gene_name:
+            if remove_by_gene_name(gtf_dict, args.string):
                 continue 
-        
+
+        if args.filter_by_class:
+            if filter_by_class(gtf_dict, args.class_list):
+                continue 
+
+        if args.filter_by_class_and_gene_name:
+            if filter_by_class_and_gene_name(gtf_dict, args.string, args.class_list):
+                continue
 
         if args.remove_unstranded:
             if remove_unstranded(gtf_dict):
                 continue 
- 
+
+            
 
         #take all gtf entries belonging to  same 'transcript_id'
         (gtf_dicts, gtf_dict, ID, process_switch) =  collect(gtf_dicts, gtf_dict, ID)
@@ -332,12 +413,13 @@ def main(args):
             write_t_obj(t_obj)
             gtf_dicts =[]
             gtf_dicts.append(gtf_dict)
-            #check_sort_order_sam_file([sam_hits[0]['qname'],ID])
-            #look at XI paires and determine if only paired or single are in the collection
+
          
 
     #last block after while iteration        
-    t_obj = make_transcript_object(gtf_dicts)
+    if not gtf_dicts:
+        raise StandardError("You discarded everthing") 
+    t_obj = make_transcript_object(gtf_dicts                                   )
     metrics = add_metrics(metrics, t_obj)
     write_t_obj(t_obj)
     metrics = get_averages_metrics(metrics)
@@ -345,7 +427,7 @@ def main(args):
 
 if __name__ == '__main__':
     args = read_arguments()
-    eval_arguments(args)
+    args = eval_arguments(args)
     main(args)
 
 __version__ = '0.001'
