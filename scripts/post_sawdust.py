@@ -32,9 +32,12 @@ def read_arguments():
     parser.add_argument('--distance',  type=int,
                     default=200000, help ="Maximum distance between two fragments in a split read")
 
+    parser.add_argument('--filter-snp-calling',   action='store_const', const ='tunred_on',
+                    default=None, help ="Filters out reads for snp calling, no multiple, no diff chr")
+
     parser.add_argument('--genome', 
                     default=None, help ="Fasta file, like: hg19.fa Only necessary for unstranded RNA Libraries")
-
+        
     parser.add_argument('--read-type', choices=['single', 'paired'], 
                     default='paired', help ="single or paired end default=paired")
 
@@ -44,6 +47,7 @@ def read_arguments():
     parser.add_argument('--seq-type', choices=['RNA', 'DNA'], 
                     default='RNA', help ="Specifies the molecule you sequenced commonly referred to as RNA- or DNA-seq")
  
+
     return parser.parse_args()
 
 
@@ -354,6 +358,9 @@ def output(aln_dict):
         for read in tlist:
             sam_line = make_sam_line(template[read][0])
             args.outfile.write(sam_line +'\n')
+
+
+
 
 
 def output_splits(aln_dict):
@@ -975,6 +982,35 @@ def check_sort_order_sam_file(lst):
     #    raise StandardError('SAM file not sorted by name:\n\t fst: {0}\n\t snd: {1} entry'.format(lst[0], lst[1]))
    
 
+
+
+def filter_for_snp_calling(aln_dict):
+
+    XI = aln_dict.keys()
+    XI.remove('suitable')
+    XI.remove('single_read_placement')
+    NH = len(XI)
+    if NH > 1: 
+        aln_dict['suitable'] = []
+        return aln_dict
+
+    fst = aln_dict[0][0]
+    snd = aln_dict[0][1]
+
+
+    n_fst= len(fst)
+    n_snd= len(snd)
+
+    if n_fst == n_snd: 
+        if fst[0]['mrnm'] != '=':
+            aln_dict['suitable'] = []
+            return aln_dict
+
+
+    return aln_dict
+    
+    
+
     
 def main(args):
     ID = None
@@ -1003,8 +1039,15 @@ def main(args):
             aln_dict = group_sam_hits_by_mappings(sam_hits)
             aln_dict = process_split_reads(aln_dict)
             aln_dict = correct_flags_and_mate_information(aln_dict)
+            
+            if (args.filter_snp_calling):
+                aln_dict = filter_for_snp_calling(aln_dict)
             aln_dict, metrics  = collect_metrics(aln_dict, metrics)
+            #pp.pprint((aln_dict))
+            
+            
             output(aln_dict)
+           
             if (args.outfile_splits):
                 output_splits(aln_dict)
             aln_dict = []
@@ -1015,6 +1058,9 @@ def main(args):
     aln_dict = group_sam_hits_by_mappings(sam_hits)
     aln_dict = process_split_reads(aln_dict)
     aln_dict = correct_flags_and_mate_information(aln_dict)
+    if (args.filter_snp_calling):
+                aln_dict = filter_for_snp_calling(aln_dict)
+
     aln_dict, metrics  = collect_metrics(aln_dict, metrics)
     output(aln_dict)
     if (args.outfile_splits):
