@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #post_sawdust.py
 
 import sys
