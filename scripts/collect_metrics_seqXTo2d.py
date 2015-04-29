@@ -229,9 +229,11 @@ def process_cutadapt(args):
 
 def _pc(args, read_type, mylist, fnames):
 
-    p = re.compile('^Total reads processed:')
-    pnumber = re.compile('\d+')
-    plength = re.compile('^length')
+    p         = re.compile('^Total reads processed:')
+    pclipped  = re.compile('^Reads with adapters:')
+    pnumber   = re.compile('\d+')
+    plength   = re.compile('^length')
+
 
     for c, f   in enumerate(mylist):
         process = None
@@ -242,12 +244,23 @@ def _pc(args, read_type, mylist, fnames):
             if  p.match(line):
                 tmp = re.sub(r',', '', line)
                 res = pnumber.search(tmp)
-                out_line= "\t".join([fnames[c], read_type, res.group(), args.step_id ]) 
+                total_reads = res.group()
+                out_line= "\t".join([fnames[c], read_type, total_reads, args.step_id ]) 
                 args.outfile.write(out_line  +'\n')
                 
+            if pclipped.match(line):
+                tmp = re.sub(r',', '', line)
+                res = pnumber.search(tmp)
+                clipped_reads = res.group()
+                not_clipped_reads =str(int(total_reads) - int(clipped_reads))  
+                zero_line= "\t".join([fnames[c], read_type,  args.step_id, '0', not_clipped_reads  ]) 
+
+
             if plength.match(line):
                 process = True
+                args.outfile2.write(zero_line  +'\n')
                 continue
+
 
             if process:
                 tmp = line.split("\t")
