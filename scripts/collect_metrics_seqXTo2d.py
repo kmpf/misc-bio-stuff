@@ -36,11 +36,14 @@ def read_arguments():
     parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
                     default=sys.stdout, help ="Outfile: default=stdout")
 
-    parser.add_argument('--program', nargs='?', type=str, choices=["post_sawdust", "cutadapt" ],
+    parser.add_argument('--program', nargs='?', type=str, choices=["post_sawdust", "cutadapt", "htseq-count" ],
                     default=None, help ="which program generated the logfile")
 
     parser.add_argument('--program-version', nargs=1, type=str, 
                     default=any, help ="which program generated the logfile")
+
+    parser.add_argument('--htseq-strip-dot-gencode', nargs='?', type=bool, 
+                        default=True, help ="strip .dot form gencode identifier ")
 
 
     parser.add_argument('--step-id', nargs='?', type=str,  
@@ -186,10 +189,6 @@ class OrderedDictYAMLLoader(yaml.Loader):
         return mapping
 
 
-
-
-
-
 def iterme(d, l, prefix):
     for k, v in d.iteritems():
         k1= "_".join([prefix,k ])
@@ -234,7 +233,7 @@ def _pc(args, read_type, mylist, fnames):
     pnumber   = re.compile('\d+')
     plength   = re.compile('^length')
 
-
+    
     for c, f   in enumerate(mylist):
         process = None
         for line in f:
@@ -269,12 +268,68 @@ def _pc(args, read_type, mylist, fnames):
                         
 
 
+def process_htseq_count(args):
+    logger = logging.getLogger()
+    #d->id->gene->count
+    genes = dict()
+
+    gene_ids = dict()
+    if args.htseq_strip_dot_gencode:
+        logger.warning("--htseq-strip-dot-gencode == TRUE")
+
+    p_underscore   = re.compile('^__*')
+
+    for c, f   in enumerate(args.infiles):
+        genes[args.fnames[c]] = dict()
+        for line in f:
+            if  not line.strip():
+                continue
+                
+            if p_underscore.match(line):
+                continue
+
+            line = line.rstrip('\n') 
+            if args.htseq_strip_dot_gencode:
+                line = re.sub(r'\.\d+', '', line)
+
+            tmp  = line.split("\t")
+            ids   = tmp[0]
+            count = tmp[1]
+            gene_ids[ids] = 1
+            genes[args.fnames[c]][ids] = count
+
+
+    
+    header = []        
+    header.append("id")
+    header.extend(args.fnames)
+    header_line= "\t".join(str(x) for x in header)
+    args.outfile.write(header_line  +'\n')
+
+
+    for gene_id in gene_ids.keys():
+        out = []
+        out.append(gene_id)
+        for fname in args.fnames:
+            try: 
+                res = genes[fname][gene_id]
+            except:
+                res = 0 
+            out.append(res)
+
+        out_line= "\t".join(str(x) for x in out)
+        args.outfile.write(out_line  +'\n')
+
 def main(args):
     if args.program == "post_sawdust":
         process_post_sawdust(args)
 
     if args.program == "cutadapt":
         process_cutadapt(args)
+
+    if args.program == "htseq-count":
+        process_htseq_count(args)
+
     else:
         print "no progL:"
 
@@ -284,7 +339,6 @@ def main(args):
 
 __version__ = '0.001'
 if __name__ == '__main__':
-
     args = read_arguments()
     args = eval_args(args)
     main(args)
