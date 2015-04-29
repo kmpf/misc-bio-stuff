@@ -324,10 +324,10 @@ def main(args):
     if args.program == "post_sawdust":
         process_post_sawdust(args)
 
-    if args.program == "cutadapt":
+    elif args.program == "cutadapt":
         process_cutadapt(args)
 
-    if args.program == "htseq-count":
+    elif args.program == "htseq-count":
         process_htseq_count(args)
 
     else:
